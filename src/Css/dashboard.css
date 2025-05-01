@@ -1,0 +1,306 @@
+.admin-dashboard {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .admin-dashboard h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .stats-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .stat-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-card h2 {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1rem;
+  }
+  
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: auto;
+  }
+  
+  .students .stat-value {
+    color: #1976d2;
+  }
+  
+  .employees .stat-value {
+    color: #388e3c;
+  }
+  
+  .visits .stat-value {
+    color: #7b1fa2;
+  }
+  
+  .quick-actions {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quick-actions h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .btn-add-student {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-add-student:hover {
+    background-color: #1565c0;
+  }
+  
+  .btn-add-employee {
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-add-employee:hover {
+    background-color: #2e7d32;
+  }
+  
+  .btn-view-history {
+    background-color: #7b1fa2;
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-view-history:hover {
+    background-color: #6a1b9a;
+  }
+
+/* employee-dashboard */
+
+.employee-dashboard {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .employee-dashboard h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .welcome-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+  }
+  
+  .welcome-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .welcome-card p {
+    color: #666;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .info-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+  
+  .info-value {
+    color: #333;
+  }
+  
+  .visit-info {
+    margin-top: 1rem;
+  }
+  
+  .no-visits {
+    color: #666;
+    font-style: italic;
+  }
+  
+  .note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+/* student-dashboard */
+
+.student-dashboard {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .student-dashboard h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .welcome-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+  }
+  
+  .welcome-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .welcome-card p {
+    color: #666;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .info-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+  
+  .info-value {
+    color: #333;
+  }
+  
+  .visit-info {
+    margin-top: 1rem;
+  }
+  
+  .no-visits {
+    color: #666;
+    font-style: italic;
+  }
+  
+  .note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
