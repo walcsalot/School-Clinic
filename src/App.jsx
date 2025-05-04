@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom"
 import { onAuthStateChanged } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore"
+import { collection, query, where, getDocs } from "firebase/firestore"
 import { auth, db } from "./config/firebase" // Ensure this path is correct
 
 // CSS
-import "./Css/main.css" // Changed to lowercase 'css'
-
+// import "./css/main.css" // Changed to lowercase 'css'
+import './index.css';
 // Auth Components
 import Choosing from "./components/auth/choosing"
 import Login from "./components/auth/login"
@@ -33,51 +33,43 @@ import EmployeeDashboard from "./components/employee/dashboard"
 import EmployeeProfile from "./components/employee/profile"
 import EmployeeHistory from "./components/employee/history"
 
-// Debug Component
-import DebugAuth from "./components/auth/debugAuth"
-
 function App() {
   const [user, setUser] = useState(null)
   const [userRole, setUserRole] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [selectedRole, setSelectedRole] = useState(null)
-  const [authInitialized, setAuthInitialized] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      try {
-        if (currentUser) {
-          // Get user role from Firestore using direct document access
-          try {
-            const userDocRef = doc(db, "users", currentUser.uid)
-            const userDocSnap = await getDoc(userDocRef)
+      if (currentUser) {
+        setUser(currentUser)
 
-            if (userDocSnap.exists()) {
-              const userData = userDocSnap.data()
-              setUser(currentUser)
+        // Get user role from Firestore
+        try {
+          const usersRef = collection(db, "users")
+          const q = query(usersRef, where("uid", "==", currentUser.uid))
+          const querySnapshot = await getDocs(q)
+
+          if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data()
+            if (userData.role) {
               setUserRole(userData.role)
             } else {
-              console.error("User document not found")
-              setUser(null)
+              // Handle missing role gracefully without console error
               setUserRole(null)
             }
-          } catch (error) {
-            console.error("Error fetching user role:", error)
-            setUser(null)
+          } else {
+            // If user document doesn't exist, reset role
             setUserRole(null)
           }
-        } else {
-          setUser(null)
+        } catch (error) {
+          console.error("Error fetching user role:", error)
           setUserRole(null)
         }
-      } catch (error) {
-        console.error("Error fetching user role:", error)
+      } else {
         setUser(null)
         setUserRole(null)
-      } finally {
-        setLoading(false)
-        setAuthInitialized(true)
       }
+      setLoading(false)
     })
 
     return () => unsubscribe()
@@ -85,24 +77,42 @@ function App() {
 
   // Protected route component
   const ProtectedRoute = ({ children, allowedRole }) => {
-    if (!authInitialized || loading) {
+    if (loading)
       return (
         <div className="loading-screen">
           <p>Loading...</p>
         </div>
       )
-    }
 
     if (!user) return <Navigate to="/" replace />
 
     if (allowedRole && userRole !== allowedRole) {
-      return <Navigate to={`/${userRole}`} replace />
+      return <Navigate to={`/${userRole || ""}`} replace />
     }
 
     return children
   }
 
-  if (!authInitialized || loading) {
+  // Login route wrapper component to handle role parameter
+  const LoginRouteWrapper = () => {
+    const { role } = useParams()
+
+    // Validate role parameter
+    const validRoles = ["admin", "student", "employee"]
+    const validRole = validRoles.includes(role) ? role : null
+
+    if (!validRole) {
+      return <Navigate to="/" replace />
+    }
+
+    if (user) {
+      return <Navigate to={`/${userRole || ""}`} replace />
+    }
+
+    return <Login setUser={setUser} setUserRole={setUserRole} role={validRole} />
+  }
+
+  if (loading) {
     return (
       <div className="loading-screen">
         <p>Loading...</p>
@@ -114,16 +124,8 @@ function App() {
     <Router>
       <Routes>
         {/* Public routes */}
-        <Route
-          path="/"
-          element={!user ? <Choosing setSelectedRole={setSelectedRole} /> : <Navigate to={`/${userRole}`} replace />}
-        />
-        <Route
-          path="/login/:role"
-          element={
-            !user ? <Login setUser={setUser} setUserRole={setUserRole} /> : <Navigate to={`/${userRole}`} replace />
-          }
-        />
+        <Route path="/" element={!user ? <Choosing /> : <Navigate to={`/${userRole || ""}`} replace />} />
+        <Route path="/login/:role" element={<LoginRouteWrapper />} />
 
         {/* Admin routes */}
         <Route
@@ -241,8 +243,7 @@ function App() {
           }
         />
 
-        {/* Debug and utility routes */}
-        <Route path="/debug-auth" element={<DebugAuth />} />
+        {/* Catch-all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

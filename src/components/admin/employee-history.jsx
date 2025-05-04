@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
-import { auth, db } from "../../config/firebase";  // Correct relative path
+import { auth, db } from "../../config/firebase"
+import ViewEmployeeInfo from './ViewEmployeeInfo'
 
 const EmployeeHistory = () => {
   const [employees, setEmployees] = useState([])
   const [loading, setLoading] = useState(true)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null)
 
   useEffect(() => {
     fetchEmployees()
@@ -48,24 +50,17 @@ const EmployeeHistory = () => {
   const handleUpdate = async () => {
     try {
       const employeeRef = doc(db, "employees", editingEmployee.id)
-
-      // Convert age back to number
       const updatedEmployee = {
         ...editingEmployee,
         age: Number.parseInt(editingEmployee.age),
       }
-
-      // Remove id field before updating
       delete updatedEmployee.id
-
       await updateDoc(employeeRef, updatedEmployee)
-
       setEmployees((prev) =>
         prev.map((employee) =>
           employee.id === editingEmployee.id ? { id: editingEmployee.id, ...updatedEmployee } : employee,
         ),
       )
-
       setEditingEmployee(null)
     } catch (error) {
       console.error("Error updating employee:", error)
@@ -96,81 +91,90 @@ const EmployeeHistory = () => {
   })
 
   return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Employee History</h1>
+    <div className="p-8 font-sans bg-gray-50 min-h-screen">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 relative inline-block">
+        Employee History
+        <span className="absolute bottom-[-8px] left-0 w-14 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded"></span>
+      </h1>
 
-      <div className="mb-6">
+      <div className="relative mb-7">
         <input
           type="text"
           placeholder="Search by name, ID, email, or reason of visit..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-green-500 focus:outline-none"
+          className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg text-sm bg-white text-black shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+          style={{
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "12px center"
+          }}
         />
       </div>
 
       {loading ? (
-        <div className="text-center">Loading employee history...</div>
+        <div className="py-8 text-center text-gray-500">Loading employee history...</div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  ID Number
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Age</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Gender
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Department
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Reasons Of Visit
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Actions
-                </th>
+        <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-blue-600 text-white">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">ID Number</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Name</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Age</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Gender</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Department</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Email</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Reasons Of Visit</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sticky top-0">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody>
               {filteredEmployees.length > 0 ? (
                 filteredEmployees.map((employee) => (
                   <tr key={employee.id} className="hover:bg-gray-50">
-                    <td className="whitespace-nowrap px-6 py-4">{employee.idNumber}</td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {employee.firstName} {employee.middleName} {employee.lastName}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">{employee.age}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{employee.gender}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{employee.department}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{employee.email}</td>
-                    <td className="px-6 py-4">{employee.reasonsOfVisit}</td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <button
-                        onClick={() => handleEdit(employee)}
-                        className="mr-2 rounded-md bg-green-600 px-3 py-1 text-white hover:bg-green-700"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(employee.id)}
-                        className="rounded-md bg-red-600 px-3 py-1 text-white hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
+                    <td className="px-5 py-4 border-b border-gray-100 font-mono font-medium">{employee.idNumber}</td>
+                    <td className="px-5 py-4 border-b border-gray-100 font-medium">{employee.firstName} {employee.middleName} {employee.lastName}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">{employee.age}</td>
+                    <td className="px-5 py-4 border-b border-gray-100 capitalize">{employee.gender}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">{employee.department}</td>
+                    <td className="px-5 py-4 border-b border-gray-100 break-all">{employee.email}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">{employee.reasonsOfVisit}</td>
+                    <td className="px-5 py-4 border-b border-gray-100">
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handleEdit(employee)} 
+                          className="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-md text-sm font-medium hover:bg-blue-100 transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => setSelectedEmployeeId(employee.id)} 
+                          className="px-3 py-1 bg-green-50 text-green-600 border border-green-100 rounded-md text-sm font-medium hover:bg-green-100 transition-colors"
+                        >
+                          View
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(employee.id)} 
+                          className="px-3 py-1 bg-red-50 text-red-600 border border-red-100 rounded-md text-sm font-medium hover:bg-red-100 transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
-                    No employees found
+                  <td colSpan="8" className="px-5 py-8 text-center text-gray-500">
+                    <div className="flex flex-col items-center justify-center gap-4">
+                      <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-lg">
+                        {searchTerm ? "No matching employees found" : "No employees found"}
+                      </p>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -180,138 +184,104 @@ const EmployeeHistory = () => {
       )}
 
       {editingEmployee && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-2xl rounded-lg bg-white p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold">Edit Employee</h2>
-              <button onClick={() => setEditingEmployee(null)} className="text-gray-500 hover:text-gray-700">
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl animate-slideUp">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-semibold text-gray-800">Edit Employee</h2>
+              <button 
+                onClick={() => setEditingEmployee(null)} 
+                className="text-gray-400 hover:text-gray-500 text-2xl p-1 rounded hover:bg-gray-100 transition-colors"
+              >
                 ✕
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">ID Number</label>
-                <input
-                  type="text"
-                  name="idNumber"
-                  value={editingEmployee.idNumber || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                />
+            <div className="p-6">
+              <div className="grid grid-cols-2 gap-5 mb-6">
+                {[
+                  { label: "ID Number", name: "idNumber" },
+                  { label: "First Name", name: "firstName" },
+                  { label: "Middle Name", name: "middleName" },
+                  { label: "Last Name", name: "lastName" },
+                  { label: "Age", name: "age", type: "number" },
+                  { label: "Department", name: "department" },
+                ].map(({ label, name, type = "text" }) => (
+                  <div key={name} className="flex flex-col">
+                    <label className="text-sm font-medium text-gray-700 mb-1">{label}</label>
+                    <input
+                      type={type}
+                      name={name}
+                      value={editingEmployee[name] || ""}
+                      onChange={handleChange}
+                      className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                    />
+                  </div>
+                ))}
+
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <select
+                    name="gender"
+                    value={editingEmployee.gender || ""}
+                    onChange={handleChange}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col">
+                  <label className="text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={editingEmployee.email || ""}
+                    onChange={handleChange}
+                    readOnly
+                    className="px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                  />
+                  <small className="text-xs text-gray-500 mt-1">Email cannot be changed</small>
+                </div>
               </div>
 
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={editingEmployee.firstName || ""}
+              <div className="mb-6">
+                <label className="text-sm font-medium text-gray-700 mb-1">Reasons Of Visit</label>
+                <textarea
+                  name="reasonsOfVisit"
+                  rows="3"
+                  value={editingEmployee.reasonsOfVisit || ""}
                   onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                />
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                ></textarea>
               </div>
 
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Middle Name</label>
-                <input
-                  type="text"
-                  name="middleName"
-                  value={editingEmployee.middleName || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={editingEmployee.lastName || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Age</label>
-                <input
-                  type="number"
-                  name="age"
-                  value={editingEmployee.age || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Gender</label>
-                <select
-                  name="gender"
-                  value={editingEmployee.gender || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                <button 
+                  onClick={() => setEditingEmployee(null)} 
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md font-medium hover:bg-gray-200 transition-colors"
                 >
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleUpdate} 
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Update
+                </button>
               </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Department</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={editingEmployee.department || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={editingEmployee.email || ""}
-                  onChange={handleChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-                  readOnly
-                />
-                <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <label className="mb-1 block text-sm font-medium text-gray-700">Reasons Of Visit</label>
-              <textarea
-                name="reasonsOfVisit"
-                value={editingEmployee.reasonsOfVisit || ""}
-                onChange={handleChange}
-                rows="3"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:outline-none"
-              ></textarea>
-            </div>
-
-            <div className="mt-6 flex justify-end space-x-4">
-              <button
-                onClick={() => setEditingEmployee(null)}
-                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdate}
-                className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-              >
-                Update
-              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {selectedEmployeeId && (
+        <ViewEmployeeInfo 
+          employeeId={selectedEmployeeId}
+          onClose={() => setSelectedEmployeeId(null)}
+        />
       )}
     </div>
   )

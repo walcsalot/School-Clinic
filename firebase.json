@@ -1,0 +1,22 @@
+{
+  "firestore": {
+    "indexes": [
+      {
+        "collectionGroup": "visits",
+        "queryScope": "COLLECTION",
+        "fields": [
+          {"fieldPath": "studentId", "order": "ASCENDING"},
+          {"fieldPath": "visitDate", "order": "DESCENDING"}
+        ]
+      },
+      {
+        "collectionGroup": "visits",
+        "queryScope": "COLLECTION",
+        "fields": [
+          {"fieldPath": "employeeId", "order": "ASCENDING"},
+          {"fieldPath": "visitDate", "order": "DESCENDING"}
+        ]
+      }
+    ]
+  }
+}

@@ -1,24 +1,21 @@
 .choosing-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #3855d7;
-  padding: 1rem;
-  /* Ensure full width */
-  width: 100%;
-}
-
-.choosing-card {
-  width: 100%;
-  max-width: 1200px; /* Reduced from 2500px to a more reasonable size */
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  /* Remove margin-left: 250px (this was causing off-center alignment) */
-  margin: 0 auto; /* Center horizontally */
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #3855d7;
+    padding: 1rem;
+  }
+  
+  .choosing-card {
+    width: 100%;
+    max-width: 2500px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-left: 250px;
+  }
   
   .choosing-header {
     text-align: center;

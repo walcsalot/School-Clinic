@@ -3,8 +3,9 @@
 import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { signOut } from "firebase/auth"
-import { auth } from "../../config/firebase" // Correct relative path
+import { auth, db } from "../../config/firebase";  // Correct relative path
 import "../../Css/sidebar.css"
+
 
 const Sidebar = ({ userRole }) => {
   const [isOpen, setIsOpen] = useState(true)

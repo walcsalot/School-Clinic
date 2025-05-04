@@ -1,0 +1,40 @@
+[debug] [2025-05-03T08:32:05.683Z] ----------------------------------------------------------------------
+[debug] [2025-05-03T08:32:05.686Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Jopay\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:indexes
+[debug] [2025-05-03T08:32:05.686Z] CLI Version:   14.2.2
+[debug] [2025-05-03T08:32:05.686Z] Platform:      win32
+[debug] [2025-05-03T08:32:05.686Z] Node Version:  v22.14.0
+[debug] [2025-05-03T08:32:05.686Z] Time:          Sat May 03 2025 16:32:05 GMT+0800 (Philippine Standard Time)
+[debug] [2025-05-03T08:32:05.687Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-03T08:32:05.891Z] Field "/firestore/indexes" in "firebase.json" is possibly invalid: must be string
+[debug] [2025-05-03T08:32:05.892Z] Field "/firestore" in "firebase.json" is possibly invalid: must be array
+[debug] [2025-05-03T08:32:05.892Z] Field "/firestore" in "firebase.json" is possibly invalid: must match a schema in anyOf
+[debug] [2025-05-03T08:32:05.895Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-03T08:32:05.896Z] > authorizing via signed-in user (jeoffmontebon0@gmail.com)
+[debug] [2025-05-03T08:32:05.896Z] [iam] checking project school-clinic-response-system for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2025-05-03T08:32:05.897Z] Checked if tokens are valid: false, expires at: 1746260434019
+[debug] [2025-05-03T08:32:05.897Z] Checked if tokens are valid: false, expires at: 1746260434019
+[debug] [2025-05-03T08:32:05.897Z] > refreshing access token with scopes: []
+[debug] [2025-05-03T08:32:05.899Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-05-03T08:32:05.899Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-05-03T08:32:06.319Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-05-03T08:32:06.319Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-05-03T08:32:06.327Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/school-clinic-response-system:testIamPermissions [none]
+[debug] [2025-05-03T08:32:06.328Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/school-clinic-response-system:testIamPermissions x-goog-quota-user=projects/school-clinic-response-system
+[debug] [2025-05-03T08:32:06.328Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/school-clinic-response-system:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2025-05-03T08:32:07.602Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/school-clinic-response-system:testIamPermissions 200
+[debug] [2025-05-03T08:32:07.603Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/school-clinic-response-system:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'school-clinic-response-system'...
+[info] 
+[info] i  deploying firestore 
+[debug] [2025-05-03T08:32:08.049Z] TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received an instance of Array
+    at Object.isAbsolute (node:path:452:5)
+    at Config.path (C:\Users\Jopay\AppData\Roaming\npm\node_modules\firebase-tools\lib\config.js:130:18)
+    at prepareIndexes (C:\Users\Jopay\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\firestore\prepare.js:17:40)
+    at default_1 (C:\Users\Jopay\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\firestore\prepare.js:53:13)
+    at chain (C:\Users\Jopay\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\index.js:40:15)
+    at deploy (C:\Users\Jopay\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\index.js:117:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: An unexpected error has occurred.
